@@ -1,16 +1,39 @@
 const fs = require('fs');
-const css = require('@mojule/object-to-css-string');
+const css = require('obj-to-css');
 
 const getRootCss = (props) => {
+    let rootCss = {
+        ['--root']: {
+            [`--${props.prefixClass}size${props.suffixClass}`]: '16px 16px',
+            [`--${props.prefixClass}overlay-size${props.suffixClass}`]: '8px 8px'
+        }
+    };
+
+    if (props.base) {
+        rootCss = {
+            ...rootCss,
+            [`${props.tagSelector}[class*=' ${props.prefixClass}'][class*=' ${props.suffixClass}'],
+            ${props.tagSelector}[class^='${props.prefixClass}'][class$='${props.suffixClass}']`]: {
+                display: 'block',
+                width: '16px',
+                height: '16px',
+                'background-size': `var(--${props.prefixClass}size${props.suffixClass})`,
+                'background-position': 'center center'
+            },
+        };
+    }
+
+    if (props.overlay) {
+        return {
+            ...rootCss,
+            ...getOverlayCss(props)
+        }
+    }
+    return rootCss;
+}
+
+const getOverlayCss = (props) => {
     return {
-        ':root': {
-            ['--primary']: '#5c7079'
-        },
-        [`${props.tagSelector}[class*=' ${props.prefixClass}'],${props.tagSelector}[class^='${props.prefixClass}']`]: {
-            display: 'block',
-            width: '16px',
-            height: '16px'
-        },
         [`${props.tagSelector}.overlay-icon`]: {
             width: '8px!important',
             height: '8px!important',
@@ -35,35 +58,51 @@ const getRootCss = (props) => {
 
 const getIconCss = (props) => {
     return {
-        background: `url('${props.path}') no-repeat`,
-        'background-size': '16px 16px',
+        background: `var(${props.iconNameProp})`
     };
 }
 
 const cleanName = (name) => {
-    return name.trim().replace(/\s/, '-').replace('_', '-');
+    return name.trim()
+        .replace(/\s/, '-')
+        .replace('_', '-');
 }
 
 /**
+ *
+ * Generates a css file from icons.
+ *
  * Options:
  * {
- *   tagSelector: 'i', // Tag element of icon
- *   iconsPath: './resources/svg', // Path of the icons
- *   outputPath: './dist', // Output path directory
- *   outputName: 'icons', // Name of the icons directory
- *   prefixClass: 'icon-', // Prefix of class icon
- *   iconAttrs: {} // Extra css attributes for icon
+ *   tagSelector: string,   // tag element of icon
+ *   iconsPath: string,     // path of target icons
+ *   ext: string,           // file extension of target icons
+ *   outputPath: string,    // path of output directory
+ *   outputName: string,    // name of generated css file
+ *   prefixClass: string,   // prefix class of icon
+ *   suffixClass: string,   // suffix class of icon
+ *   iconAttrs: object,     // extra css attributes for css icon
+ *   overlay: boolean,      // whether to support overlay icon in the css
+ *   base: boolean,         // whether to add base styling in the css
  * }
- * @param options
  */
 function generateCssIcon(options) {
     if (!options || !(options instanceof Object))
         throw new Error('Missing option object.');
 
-    const ext = options.ext || '.svg';
-    const outputName = options.outputName.endsWith('.css') ? options.outputName : options.outputName + '.css';
-    const outputPath = options.outputPath || './dist';
-    const prefixClass = options.prefixClass || 'icon-';
+    if (!options.outputName) {
+        options.outputName = 'icons.css'
+    }
+
+    if (!options.tagSelector) {
+        options.tagSelector = 'i';
+    }
+
+    const ext = options.ext = options.ext || '.svg';
+    const outputName = options.outputName = (options.outputName.endsWith('.css') ? options.outputName : options.outputName + '.css');
+    const outputPath = options.outputPath = options.outputPath || './dist';
+    const prefixClass = options.prefixClass = options.prefixClass || 'my-';
+    const suffixClass = options.suffixClass = options.suffixClass || '-icon';
 
     if (!fs.existsSync(outputPath)) {
         fs.mkdirSync(outputPath);
@@ -84,18 +123,23 @@ function generateCssIcon(options) {
         const iconPath = `${options.iconsPath}/${iconFileName}`;
         const iconName = iconFileName.substr(0, iconFileName.length - ext.length);
         const outputIconPath = `${outputPath}/icons/${iconFileName}`;
+        const iconFilePathName = './icons/' + iconFileName;
+        const iconNameProp = `--${prefixClass}${iconName}${suffixClass}`;
+
+        // Add icon path as custom prop
+        outputCss['--root'] = {...outputCss['--root'], [iconNameProp]: `url(${iconFilePathName})`};
 
         console.log(`[INFO] Adding icon file '${outputIconPath}'.`);
         fs.copyFileSync(iconPath, outputIconPath);
         console.log(`[INFO] Icon file was successfully added.`);
 
-        outputCss[`.${prefixClass}${cleanName(iconName)}`] = {
-            ...getIconCss({path: './icons/' + iconFileName}),
+        outputCss[`.${prefixClass}${cleanName(iconName)}${suffixClass}`] = {
+            ...getIconCss({iconNameProp}),
             ...options.iconAttrs
         };
     }
 
-    console.log(`[INFO] Writing css file at '${outputPath}/${outputName}'`)
+    console.log(`[INFO] Writing css file at '${outputPath}/${outputName}'`);
     fs.writeFileSync(outputPath + '/' + outputName, css(outputCss));
 
     console.log(`[INFO] Successfully generated '${iconFileNames.length}' icons in css file!`);

@@ -15,9 +15,9 @@ const options = yargs.options({
         describe: 'Output directory of generate css file and icons',
         type: 'string'
     },
-    'tag': {
-        alias: 'ti',
-        describe: 'Tag element of icon',
+    'name': {
+        alias: 'n',
+        describe: 'Name of generated css',
         type: 'string'
     },
     'prefix': {
@@ -25,15 +25,30 @@ const options = yargs.options({
         describe: 'Prefix of icon class',
         type: 'string'
     },
-    'icondir': {
-        alias: 'd',
-        describe: 'Directory name for generated icons',
+    'suffix': {
+        alias: 's',
+        describe: 'Suffix of icon class',
+        type: 'string'
+    },
+    'tag': {
+        alias: 'ti',
+        describe: 'Tag element of icon',
         type: 'string'
     },
     'ext': {
         alias: 'e',
         describe: 'File extension of the target icons',
         type: 'string'
+    },
+    'overlay': {
+        alias: 'ov',
+        describe: 'Whether to add support for overlay icon in css',
+        type: 'boolean'
+    },
+    'base': {
+        alias: 'b',
+        describe: 'Whether to add the base styling in css',
+        type: 'boolean'
     }
 })
     .help()
@@ -43,8 +58,11 @@ iconCssGenerator({
     tagSelector: options.tag,
     iconsPath: options.target,
     outputPath: options.output,
-    outputName: options.icondir,
+    outputName: options.name,
     prefixClass: options.prefix,
+    suffixClass: options.suffix,
     ext: options.ext,
-    iconAttrs: {}
+    iconAttrs: {},
+    overlay: options.overflow,
+    base: options.base
 });
