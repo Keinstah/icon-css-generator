@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ fontName }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini-default.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ htmlCssRelativePath }}" />
+</head>
+<body>
+<div class="container">
+
+    <h1>{{ fontName }}</h1>
+
+    <ul>
+        {{# each names }}
+            <li>
+                <{{ ../baseTag }} class="{{ ../baseClassNames }} {{ ../classPrefix }}{{ this }}"></{{ ../baseTag }}>
+            <span class='label'>.{{ ../classPrefix }}{{ this }}</span>
+            </li>
+        {{/ each }}
+    </ul>
+
+    <h1>Overlay</h1>
+
+    <div class="preview">
+        <p><i class="icon-bigdecimal">
+            <i class="overlay-icon warning icon-boolean"></i>
+        </i></p>
+        <span class='label' style="text-align: left;">
+        <code>
+            <pre>&#x3C;i class=&#x22;icon-bigdecimal&#x22;&#x3E;
+  &#x3C;i class=&#x22;overlay-icon warning icon-boolean&#x22;&#x3E;&#x3C;/i&#x3E;
+&#x3C;/i&#x3E;</pre>
+        </code>
+    </span>
+    </div>
+
+    <h2>Overlay position</h2>
+
+    <ul>
+        <li><strong>Top Left</strong> .overlay-icon-tl</li>
+        <li><strong>Top Right</strong> .overlay-icon-tr</li>
+        <li><strong>Bottom Left</strong> .overlay-icon-bl</li>
+        <li><strong>Bottom Right</strong> .overlay-icon-br</li>
+    </ul>
+
+    <h1>Colors</h1>
+
+    <ul>
+        <li><strong>Red</strong> .error</li>
+        <li><strong>Green</strong> .success</li>
+        <li><strong>Orange</strong> .warning</li>
+        <li><strong>TORO color</strong> .primary</li>
+    </ul>
+</div>
+</body>
+</html>
