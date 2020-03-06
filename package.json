@@ -2,7 +2,7 @@
   "name": "icon-css-generator",
   "version": "1.0.0",
   "description": "Generates an icon css file from image files.",
-  "main": "src/icon-generator.js",
+  "main": "src/icon-css-generator.js",
   "scripts": {},
   "repository": {
     "type": "git",

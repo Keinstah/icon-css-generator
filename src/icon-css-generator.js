@@ -56,7 +56,7 @@ const cleanName = (name) => {
  * }
  * @param options
  */
-function generateIconCss(options) {
+function generateCssIcon(options) {
     if (!options || !(options instanceof Object))
         throw new Error('Missing option object.');
 
@@ -101,14 +101,4 @@ function generateIconCss(options) {
 }
 
 
-module.exports = generateIconCss;
-
-//
-// generateIconCss({
-//     tagSelector: 'i',
-//     iconsPath: './resources/svg',
-//     outputPath: './dist',
-//     outputName: 'icons',
-//     prefixClass: 'icon-',
-//     iconAttrs: {}
-// })
+module.exports = generateCssIcon;
