@@ -1,9 +1,11 @@
 const fs = require('fs');
 const css = require('obj-to-css');
 
+const rootVar = ':root';
+
 const getRootCss = (props) => {
     let rootCss = {
-        ['--root']: {
+        [rootVar]: {
             [`--${props.prefixClass}size${props.suffixClass}`]: '16px 16px',
             [`--${props.prefixClass}overlay-size${props.suffixClass}`]: '8px 8px'
         }
@@ -58,7 +60,7 @@ const getOverlayCss = (props) => {
 
 const getIconCss = (props) => {
     return {
-        background: `var(${props.iconNameProp})`
+        'background-image': `var(${props.iconNameProp})`
     };
 }
 
@@ -127,7 +129,7 @@ function generateCssIcon(options) {
         const iconNameProp = `--${prefixClass}${iconName}${suffixClass}`;
 
         // Add icon path as custom prop
-        outputCss['--root'] = {...outputCss['--root'], [iconNameProp]: `url(${iconFilePathName})`};
+        outputCss[rootVar] = {...outputCss[rootVar], [iconNameProp]: `url(${iconFilePathName})`};
 
         console.log(`[INFO] Adding icon file '${outputIconPath}'.`);
         fs.copyFileSync(iconPath, outputIconPath);
