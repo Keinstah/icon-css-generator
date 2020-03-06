@@ -63,6 +63,7 @@ function generateCssIcon(options) {
     const ext = options.ext || '.svg';
     const outputName = options.outputName.endsWith('.css') ? options.outputName : options.outputName + '.css';
     const outputPath = options.outputPath || './dist';
+    const prefixClass = options.prefixClass || 'icon-';
 
     if (!fs.existsSync(outputPath)) {
         fs.mkdirSync(outputPath);
@@ -88,7 +89,7 @@ function generateCssIcon(options) {
         fs.copyFileSync(iconPath, outputIconPath);
         console.log(`[INFO] Icon file was successfully added.`);
 
-        outputCss[`.${options.prefixClass}${cleanName(iconName)}`] = {
+        outputCss[`.${prefixClass}${cleanName(iconName)}`] = {
             ...getIconCss({path: './icons/' + iconFileName}),
             ...options.iconAttrs
         };

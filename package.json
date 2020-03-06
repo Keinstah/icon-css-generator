@@ -4,6 +4,7 @@
   "description": "Generates an icon css file from image files.",
   "main": "src/icon-css-generator.js",
   "scripts": {},
+  "bin": "src/bin/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/Keinstah/icon-css-generator.git"
@@ -16,7 +17,8 @@
   "author": "Kevin King Agatep <keinstah@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@mojule/object-to-css-string": "^0.2.0"
+    "@mojule/object-to-css-string": "^0.2.0",
+    "yargs": "^15.1.0"
   },
   "homepage": "https://github.com/Keinstah/icon-css-generator"
 }
