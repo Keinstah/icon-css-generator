@@ -126,7 +126,8 @@ function generateCssIcon(options) {
         const iconName = iconFileName.substr(0, iconFileName.length - ext.length);
         const outputIconPath = `${outputPath}/icons/${iconFileName}`;
         const iconFilePathName = './icons/' + iconFileName;
-        const iconNameProp = `--${prefixClass}${iconName}${suffixClass}`;
+        const cleanIconName = cleanName(iconName);
+        const iconNameProp = `--${prefixClass}${cleanIconName}${suffixClass}`;
 
         // Add icon path as custom prop
         outputCss[rootVar] = {...outputCss[rootVar], [iconNameProp]: `url(${iconFilePathName})`};
@@ -135,7 +136,7 @@ function generateCssIcon(options) {
         fs.copyFileSync(iconPath, outputIconPath);
         console.log(`[INFO] Icon file was successfully added.`);
 
-        outputCss[`.${prefixClass}${cleanName(iconName)}${suffixClass}`] = {
+        outputCss[`.${prefixClass}${cleanIconName}${suffixClass}`] = {
             ...getIconCss({iconNameProp}),
             ...options.iconAttrs
         };
