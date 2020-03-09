@@ -78,7 +78,7 @@ const cleanName = (name) => {
  * {
  *   tagSelector: string,   // tag element of icon
  *   iconsPath: string,     // path of target icons
- *   ext: string,           // file extension of target icons
+ *   ext: string || string[],           // file extension of target icons
  *   outputPath: string,    // path of output directory
  *   outputName: string,    // name of generated css file
  *   prefixClass: string,   // prefix class of icon
@@ -100,7 +100,6 @@ function generateCssIcon(options) {
         options.tagSelector = 'i';
     }
 
-    const ext = options.ext = options.ext || '.svg';
     const outputName = options.outputName = (options.outputName.endsWith('.css') ? options.outputName : options.outputName + '.css');
     const outputPath = options.outputPath = options.outputPath || './dist';
     const prefixClass = options.prefixClass = options.prefixClass || 'my-';
@@ -111,30 +110,39 @@ function generateCssIcon(options) {
         console.log(`[INFO] Created output directory '${outputPath}'.`);
     }
 
-    if (!fs.existsSync(outputPath + '/icons')) {
-        fs.mkdirSync(outputPath + '/icons');
-        console.log(`[INFO] Created icons directory '${outputPath}'.`);
-    }
-
     const outputCss = getRootCss(options);
     console.log(`[INFO] Reading icons at '${options.iconsPath}'.`);
     const iconFileNames = fs.readdirSync(options.iconsPath)
-        .filter((fileName) => fileName.endsWith(ext));
+        .filter((fileName) => {
+            if (options.ext) {
+                if (Array.isArray(options.ext) && options.ext.length > 0) {
+                    return options.ext.filter((e) => fileName.endsWith(e)).length > 0;
+                } else {
+                    return fileName.endsWith(options.ext);
+                }
+            } else {
+                return fileName.endsWith('.svg');
+            }
+        });
 
     for (const iconFileName of iconFileNames) {
         const iconPath = `${options.iconsPath}/${iconFileName}`;
+        const splitFileName = iconFileName.split('.');
+        const ext = '.' + splitFileName[splitFileName.length - 1];
         const iconName = iconFileName.substr(0, iconFileName.length - ext.length);
-        const outputIconPath = `${outputPath}/icons/${iconFileName}`;
-        const iconFilePathName = './icons/' + iconFileName;
+        const outputIconPath = `${outputPath}/${iconFileName}`;
+        const iconFilePathName = './' + iconFileName;
         const cleanIconName = cleanName(iconName);
         const iconNameProp = `--${prefixClass}${cleanIconName}${suffixClass}`;
 
         // Add icon path as custom prop
         outputCss[rootVar] = {...outputCss[rootVar], [iconNameProp]: `url(${iconFilePathName})`};
 
-        console.log(`[INFO] Adding icon file '${outputIconPath}'.`);
-        fs.copyFileSync(iconPath, outputIconPath);
-        console.log(`[INFO] Icon file was successfully added.`);
+        if (outputPath !== options.iconsPath) {
+            console.log(`[INFO] Adding icon file '${outputIconPath}'.`);
+            fs.copyFileSync(iconPath, outputIconPath);
+            console.log(`[INFO] Icon file was successfully added.`);
+        }
 
         outputCss[`.${prefixClass}${cleanIconName}${suffixClass}`] = {
             ...getIconCss({iconNameProp}),

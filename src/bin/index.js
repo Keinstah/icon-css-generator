@@ -38,7 +38,7 @@ const options = yargs.options({
     'ext': {
         alias: 'e',
         describe: 'File extension of the target icons',
-        type: 'string'
+        type: 'array'
     },
     'overlay': {
         alias: 'ov',
