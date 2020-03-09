@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const css = require('obj-to-css');
 
 const rootVar = ':root';
@@ -86,6 +87,7 @@ const cleanName = (name) => {
  *   iconAttrs: object,     // extra css attributes for css icon
  *   overlay: boolean,      // whether to support overlay icon in the css
  *   base: boolean,         // whether to add base styling in the css
+ *   copyIcons: boolean,    // make a copy of icons when generating css file. It will only work if the output path and output path is not the same.
  * }
  */
 function generateCssIcon(options) {
@@ -131,18 +133,21 @@ function generateCssIcon(options) {
         const ext = '.' + splitFileName[splitFileName.length - 1];
         const iconName = iconFileName.substr(0, iconFileName.length - ext.length);
         const outputIconPath = `${outputPath}/${iconFileName}`;
-        const iconFilePathName = './' + iconFileName;
+
+        if (outputPath !== options.iconsPath) {
+            if (options.copyIcons) {
+                console.log(`[INFO] Adding icon file '${outputIconPath}'.`);
+                fs.copyFileSync(iconPath, outputIconPath);
+                console.log(`[INFO] Icon file was successfully added.`);
+            }
+        }
+
+        const iconFilePathName = path.relative(outputPath, options.iconsPath) + '/' + iconFileName;
         const cleanIconName = cleanName(iconName);
         const iconNameProp = `--${prefixClass}${cleanIconName}${suffixClass}`;
 
         // Add icon path as custom prop
         outputCss[rootVar] = {...outputCss[rootVar], [iconNameProp]: `url(${iconFilePathName})`};
-
-        if (outputPath !== options.iconsPath) {
-            console.log(`[INFO] Adding icon file '${outputIconPath}'.`);
-            fs.copyFileSync(iconPath, outputIconPath);
-            console.log(`[INFO] Icon file was successfully added.`);
-        }
 
         outputCss[`.${prefixClass}${cleanIconName}${suffixClass}`] = {
             ...getIconCss({iconNameProp}),

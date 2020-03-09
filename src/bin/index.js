@@ -31,7 +31,7 @@ const options = yargs.options({
         type: 'string'
     },
     'tag': {
-        alias: 'ti',
+        alias: 'g',
         describe: 'Tag element of icon',
         type: 'string'
     },
@@ -41,13 +41,18 @@ const options = yargs.options({
         type: 'array'
     },
     'overlay': {
-        alias: 'ov',
+        alias: 'v',
         describe: 'Whether to add support for overlay icon in css',
         type: 'boolean'
     },
     'base': {
         alias: 'b',
         describe: 'Whether to add the base styling in css',
+        type: 'boolean'
+    },
+    'copy': {
+        alias: 'c',
+        describe: 'Make a copy of icons when generating the css file. This option will only work if the output path and target path is not the same.',
         type: 'boolean'
     }
 })
@@ -64,5 +69,6 @@ iconCssGenerator({
     ext: options.ext,
     iconAttrs: {},
     overlay: options.overflow,
-    base: options.base
+    base: options.base,
+    copyIcons: options.copy,
 });
