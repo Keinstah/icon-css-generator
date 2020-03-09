@@ -134,12 +134,10 @@ function generateCssIcon(options) {
         const iconName = iconFileName.substr(0, iconFileName.length - ext.length);
         const outputIconPath = `${outputPath}/${iconFileName}`;
 
-        if (outputPath !== options.iconsPath) {
-            if (options.copyIcons) {
-                console.log(`[INFO] Adding icon file '${outputIconPath}'.`);
-                fs.copyFileSync(iconPath, outputIconPath);
-                console.log(`[INFO] Icon file was successfully added.`);
-            }
+        if (options.copyIcons && outputPath !== options.iconsPath) {
+            console.log(`[INFO] Adding icon file '${outputIconPath}'.`);
+            fs.copyFileSync(iconPath, outputIconPath);
+            console.log(`[INFO] Icon file was successfully added.`);
         }
 
         const iconFilePathName = path.relative(outputPath, options.iconsPath) + '/' + iconFileName;

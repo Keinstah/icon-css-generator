@@ -13,47 +13,56 @@ const options = yargs.options({
     'output': {
         alias: 'o',
         describe: 'Output directory of generate css file and icons',
-        type: 'string'
+        type: 'string',
+        default: './dist'
     },
     'name': {
         alias: 'n',
         describe: 'Name of generated css',
-        type: 'string'
+        type: 'string',
+        default: 'icons'
     },
     'prefix': {
         alias: 'p',
         describe: 'Prefix of icon class',
-        type: 'string'
+        type: 'string',
+        default: 'my-'
     },
     'suffix': {
         alias: 's',
         describe: 'Suffix of icon class',
-        type: 'string'
+        type: 'string',
+        default: '-icon'
     },
     'tag': {
         alias: 'g',
         describe: 'Tag element of icon',
-        type: 'string'
+        type: 'string',
+        default: 'i',
     },
     'ext': {
         alias: 'e',
         describe: 'File extension of the target icons',
-        type: 'array'
+        type: 'array',
+        default: ['.svg']
     },
     'overlay': {
         alias: 'v',
         describe: 'Whether to add support for overlay icon in css',
-        type: 'boolean'
+        type: 'boolean',
+        default: false
     },
     'base': {
         alias: 'b',
         describe: 'Whether to add the base styling in css',
-        type: 'boolean'
+        type: 'boolean',
+        default: false
     },
     'copy': {
         alias: 'c',
         describe: 'Make a copy of icons when generating the css file. This option will only work if the output path and target path is not the same.',
-        type: 'boolean'
+        type: 'boolean',
+        default: false
     }
 })
     .help()
